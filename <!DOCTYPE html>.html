@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>F1 Live Timing</title>
+<style>
+body {
+background:black;
+color:white;
+font-family:Arial;
+}
+table{
+border-collapse:collapse;
+}
+td{
+padding:6px;
+border-bottom:1px solid gray;
+}
+</style>
+</head>
+<body>
+<h1>F1 Live Timing</h1>
+<table id="timing">
+<tr><td>Loading...</td></tr>
+</table>
+<script>
+async function updateTiming() {
+const response = await fetch("https://api.openf1.org/v1/position?session_key=latest");
+const data = await response.json();
+let table = "";
+data.slice(0,10).forEach(driver => {
+table += `<tr>
+<td>P${driver.position}</td>
+<td>#${driver.driver_number}</td>
+</tr>`;
+});
+document.getElementById("timing").innerHTML = table;
+}
+updateTiming();
+setInterval(updateTiming,5000);
+</script>
+</body>
+</html>
