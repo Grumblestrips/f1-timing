@@ -1,28 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>F1 Live Timing</title>
+<title>F1 Live Timing | Grumble Strips</title>
 <style>
-body { background:black; color:white; font-family:Arial; }
-table { border-collapse:collapse; }
-td { padding:6px; border-bottom:1px solid gray; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0a; color: white; font-family: Arial, sans-serif; }
+header { background: #e10600; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
+header h1 { font-size: 1.4em; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+#session-info { font-size: 0.8em; opacity: 0.9; letter-spacing: 1px; }
+#last-updated { font-size: 0.7em; color: #aaa; text-align: right; padding: 8px 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+thead { background: #1a1a1a; color: #e10600; font-size: 0.75em; letter-spacing: 2px; text-transform: uppercase; }
+thead td { padding: 10px 15px; }
+tbody tr { border-bottom: 1px solid #1e1e1e; transition: background 0.2s; }
+tbody tr:hover { background: #1a1a1a; }
+tbody td { padding: 12px 15px; font-size: 0.95em; }
+.pos { font-weight: 900; font-size: 1.1em; color: #e10600; width: 50px; }
+.pos-1 { color: gold; }
+.pos-2 { color: silver; }
+.pos-3 { color: #cd7f32; }
+.driver-num { font-weight: 700; width: 60px; color: #aaa; }
+.driver-name { font-weight: 700; letter-spacing: 1px; }
+.team-bar { width: 4px; height: 30px; border-radius: 2px; display: inline-block; margin-right: 10px; vertical-align: middle; }
+.team-name { color: #888; font-size: 0.8em; }
+.live-dot { display: inline-block; width: 8px; height: 8px; background: #00ff00; border-radius: 50%; margin-right: 6px; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
 </style>
 </head>
 <body>
-<h1>F1 Live Timing</h1>
-<table id="timing"><tr><td>Loading...</td></tr></table>
+<header>
+  <h1>🏎️ F1 Live Timing</h1>
+  <div id="session-info">Grumble Strips</div>
+</header>
+<div id="last-updated"></div>
+<table>
+  <thead>
+    <tr>
+      <td>POS</td>
+      <td>NO</td>
+      <td>DRIVER</td>
+      <td>TEAM</td>
+    </tr>
+  </thead>
+  <tbody id="timing">
+    <tr><td colspan="4" style="text-align:center;padding:40px;color:#555">Loading timing data...</td></tr>
+  </tbody>
+</table>
 <script>
+const drivers = {
+  1:  { name: "Max Verstappen",     team: "Red Bull Racing", color: "#3671C6" },
+  4:  { name: "Lando Norris",       team: "McLaren",         color: "#FF8000" },
+  6:  { name: "Isack Hadjar",       team: "RB",              color: "#6692FF" },
+  10: { name: "Pierre Gasly",       team: "Alpine",          color: "#FF87BC" },
+  11: { name: "Sergio Perez",       team: "Red Bull Racing", color: "#3671C6" },
+  12: { name: "Andrea Kimi",        team: "Sauber",          color: "#52E252" },
+  14: { name: "Fernando Alonso",    team: "Aston Martin",    color: "#358C75" },
+  16: { name: "Charles Leclerc",    team: "Ferrari",         color: "#E8002D" },
+  18: { name: "Lance Stroll",       team: "Aston Martin",    color: "#358C75" },
+  20: { name: "Kevin Magnussen",    team: "Haas",            color: "#B6BABD" },
+  22: { name: "Yuki Tsunoda",       team: "RB",              color: "#6692FF" },
+  23: { name: "Alexander Albon",    team: "Williams",        color: "#64C4FF" },
+  24: { name: "Zhou Guanyu",        team: "Sauber",          color: "#52E252" },
+  27: { name: "Nico Hulkenberg",    team: "Haas",            color: "#B6BABD" },
+  31: { name: "Esteban Ocon",       team: "Haas",            color: "#B6BABD" },
+  44: { name: "Lewis Hamilton",     team: "Ferrari",         color: "#E8002D" },
+  55: { name: "Carlos Sainz",       team: "Williams",        color: "#64C4FF" },
+  63: { name: "George Russell",     team: "Mercedes",        color: "#27F4D2" },
+  77: { name: "Valtteri Bottas",    team: "Sauber",          color: "#52E252" },
+  81: { name: "Oscar Piastri",      team: "McLaren",         color: "#FF8000" },
+  87: { name: "Oliver Bearman",     team: "Haas",            color: "#B6BABD" },
+};
+
 async function updateTiming() {
-const response = await fetch("https://api.openf1.org/v1/position?session_key=latest");
-const data = await response.json();
-let table = "";
-data.slice(0,10).forEach(driver => {
-table += `<tr><td>P${driver.position}</td><td>#${driver.driver_number}</td></tr>`;
-});
-document.getElementById("timing").innerHTML = table;
+  try {
+    const response = await fetch("https://api.openf1.org/v1/position?session_key=latest");
+    const data = await response.json();
+    if (!data || data.length === 0) {
+      document.getElementById("timing").innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#555">No live session data available</td></tr>';
+      return;
+    }
+    const latest = {};
+    data.forEach(d => {
+      if (!latest[d.driver_number] || d.date > latest[d.driver_number].date) {
+        latest[d.driver_number] = d;
+      }
+    });
+    const sorted = Object.values(latest).sort((a, b) => a.position - b.position);
+    let html = "";
+    sorted.forEach(d => {
+      const driver = drivers[d.driver_number] || { name: "Driver #" + d.driver_number, team: "Unknown", color: "#555" };
+      const posClass = d.position === 1 ? "pos pos-1" : d.position === 2 ? "pos pos-2" : d.position === 3 ? "pos pos-3" : "pos";
+      html += `<tr>
+        <td class="${posClass}">P${d.position}</td>
+        <td class="driver-num">${d.driver_number}</td>
+        <td class="driver-name"><span class="team-bar" style="background:${driver.color}"></span>${driver.name}</td>
+        <td class="team-name">${driver.team}</td>
+      </tr>`;
+    });
+    document.getElementById("timing").innerHTML = html;
+    document.getElementById("last-updated").innerHTML = '<span class="live-dot"></span> Last updated: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    document.getElementById("timing").innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#555">Error loading data</td></tr>';
+  }
 }
 updateTiming();
-setInterval(updateTiming,5000);
+setInterval(updateTiming, 5000);
 </script>
 </body>
 </html>
