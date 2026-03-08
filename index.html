@@ -5,42 +5,140 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #0a0a0a; color: white; font-family: Arial, sans-serif; }
-header { background: #e10600; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
+
+header {
+  background: #e10600;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 header h1 { font-size: 1.4em; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
-#session-info { font-size: 0.8em; opacity: 0.9; letter-spacing: 1px; }
-#last-updated { font-size: 0.7em; color: #aaa; text-align: right; padding: 8px 20px; border-bottom: 1px solid #1a1a1a; }
+#session-info { font-size: 0.8em; opacity: 0.9; letter-spacing: 1px; text-align: right; }
+
+/* Safety Car Banner */
+#safety-car-banner {
+  display: none;
+  background: #ffcc00;
+  color: #000;
+  text-align: center;
+  padding: 10px;
+  font-weight: 900;
+  font-size: 1em;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: scpulse 1s infinite;
+}
+#vsc-banner {
+  display: none;
+  background: #ff8c00;
+  color: #000;
+  text-align: center;
+  padding: 10px;
+  font-weight: 900;
+  font-size: 1em;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: scpulse 1s infinite;
+}
+@keyframes scpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+#countdown-bar {
+  background: #111;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #222;
+}
+#next-race-label { color: #888; font-size: 0.75em; text-transform: uppercase; letter-spacing: 2px; }
+#next-race-name { color: white; font-size: 0.9em; font-weight: 700; margin-top: 2px; }
+#countdown { font-family: monospace; font-size: 1.1em; color: #e10600; font-weight: 700; letter-spacing: 1px; }
+
+#last-updated { font-size: 0.7em; color: #555; text-align: right; padding: 6px 20px; border-bottom: 1px solid #1a1a1a; }
+#session-label { background: #161616; padding: 8px 15px; font-size: 0.72em; color: #888; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #1e1e1e; }
+
 table { width: 100%; border-collapse: collapse; }
-thead { background: #111; color: #e10600; font-size: 0.7em; letter-spacing: 2px; text-transform: uppercase; }
-thead td { padding: 10px 12px; }
+thead { background: #111; color: #e10600; font-size: 0.68em; letter-spacing: 2px; text-transform: uppercase; }
+thead td { padding: 10px 10px; }
 tbody tr { border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
 tbody tr:hover { background: #141414; }
-tbody td { padding: 11px 12px; font-size: 0.9em; vertical-align: middle; }
-.pos { font-weight: 900; font-size: 1.05em; width: 45px; color: #e10600; }
+tbody tr.in-pit { background: #1a1400; }
+tbody td { padding: 10px 10px; font-size: 0.88em; vertical-align: middle; }
+
+.pos { font-weight: 900; font-size: 1.05em; width: 40px; color: #e10600; }
 .pos-1 { color: gold; }
 .pos-2 { color: silver; }
 .pos-3 { color: #cd7f32; }
-.driver-num { color: #666; font-size: 0.85em; width: 40px; }
-.team-bar { width: 3px; height: 28px; border-radius: 2px; display: inline-block; margin-right: 8px; vertical-align: middle; }
-.driver-name { font-weight: 700; font-size: 0.95em; }
-.team-name { color: #666; font-size: 0.75em; display: block; margin-top: 2px; }
-.gap { color: #e10600; font-size: 0.85em; font-family: monospace; width: 90px; }
-.gap-leader { color: #888; font-size: 0.8em; }
-.lap-time { font-family: monospace; font-size: 0.85em; color: #ccc; width: 90px; }
+.driver-num { color: #555; font-size: 0.82em; width: 35px; }
+.team-bar { width: 3px; height: 26px; border-radius: 2px; display: inline-block; margin-right: 7px; vertical-align: middle; }
+.driver-name { font-weight: 700; font-size: 0.92em; }
+.team-name { color: #555; font-size: 0.72em; display: block; margin-top: 2px; }
+.gap { color: #aaa; font-size: 0.82em; font-family: monospace; }
+.gap-leader { color: #888; font-size: 0.78em; }
+.lap-time { font-family: monospace; font-size: 0.82em; color: #ccc; }
 .lap-fastest { color: #b94fcb; font-weight: bold; }
+
+/* Tyre compounds */
+.tyre {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 0.75em;
+  letter-spacing: 0px;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+.tyre-SOFT     { background: #e8002d; color: white; }
+.tyre-MEDIUM   { background: #ffd700; color: black; }
+.tyre-HARD     { background: #e0e0e0; color: black; }
+.tyre-INTER    { background: #39b54a; color: white; }
+.tyre-WET      { background: #0067ff; color: white; }
+.tyre-UNKNOWN  { background: #333; color: #888; }
+
+.tyre-age { font-size: 0.72em; color: #666; margin-left: 4px; }
+
+/* Pit indicator */
+.pit-badge {
+  background: #ffcc00;
+  color: #000;
+  font-size: 0.65em;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
 .live-dot { display: inline-block; width: 8px; height: 8px; background: #00ff00; border-radius: 50%; margin-right: 6px; animation: pulse 1.5s infinite; }
+.static-dot { display: inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin-right: 6px; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-#no-session { text-align: center; padding: 60px 20px; color: #444; }
-#no-session h2 { font-size: 1.2em; margin-bottom: 10px; color: #666; }
-#no-session p { font-size: 0.85em; line-height: 1.8; }
-#no-session a { color: #e10600; text-decoration: none; }
 </style>
 </head>
 <body>
+
 <header>
   <h1>🏎️ F1 Live Timing</h1>
-  <div id="session-info">Grumble Strips</div>
+  <div id="session-info">Grumble Strips<br><span style="font-size:0.85em;opacity:0.7">2026 Season</span></div>
 </header>
+
+<div id="safety-car-banner">🚗 SAFETY CAR DEPLOYED</div>
+<div id="vsc-banner">🟡 VIRTUAL SAFETY CAR</div>
+
+<div id="countdown-bar">
+  <div>
+    <div id="next-race-label">Next Race</div>
+    <div id="next-race-name">Loading...</div>
+  </div>
+  <div id="countdown">--d --h --m --s</div>
+</div>
+
 <div id="last-updated"></div>
+<div id="session-label">Loading...</div>
+
 <table>
   <thead>
     <tr>
@@ -48,142 +146,302 @@ tbody td { padding: 11px 12px; font-size: 0.9em; vertical-align: middle; }
       <td>NO</td>
       <td>DRIVER</td>
       <td>GAP</td>
-      <td>LAST LAP</td>
+      <td>TYRE</td>
+      <td>BEST LAP</td>
     </tr>
   </thead>
   <tbody id="timing">
-    <tr><td colspan="5" style="text-align:center;padding:40px;color:#444">Loading timing data...</td></tr>
+    <tr><td colspan="6" style="text-align:center;padding:40px;color:#444">Loading timing data...</td></tr>
   </tbody>
 </table>
+
 <script>
-// Full 2026 F1 Grid - 22 drivers
+
 const drivers = {
-  1:  { name: "Lando Norris",        team: "McLaren",         color: "#FF8000" },
-  3:  { name: "Max Verstappen",      team: "Red Bull Racing", color: "#3671C6" },
-  5:  { name: "Gabriel Bortoleto",   team: "Audi",            color: "#C6002A" },
-  6:  { name: "Isack Hadjar",        team: "Racing Bulls",    color: "#6692FF" },
-  10: { name: "Pierre Gasly",        team: "Alpine",          color: "#FF87BC" },
-  11: { name: "Sergio Perez",        team: "Cadillac",        color: "#FFFFFF" },
-  12: { name: "Kimi Antonelli",      team: "Mercedes",        color: "#27F4D2" },
-  14: { name: "Fernando Alonso",     team: "Aston Martin",    color: "#358C75" },
-  16: { name: "Charles Leclerc",     team: "Ferrari",         color: "#E8002D" },
-  18: { name: "Lance Stroll",        team: "Aston Martin",    color: "#358C75" },
-  23: { name: "Alexander Albon",     team: "Williams",        color: "#64C4FF" },
-  27: { name: "Nico Hulkenberg",     team: "Audi",            color: "#C6002A" },
-  30: { name: "Liam Lawson",         team: "Racing Bulls",    color: "#6692FF" },
-  31: { name: "Esteban Ocon",        team: "Haas",            color: "#B6BABD" },
-  41: { name: "Arvid Lindblad",      team: "Racing Bulls",    color: "#6692FF" },
-  43: { name: "Franco Colapinto",    team: "Alpine",          color: "#FF87BC" },
-  44: { name: "Lewis Hamilton",      team: "Ferrari",         color: "#E8002D" },
-  55: { name: "Carlos Sainz",        team: "Williams",        color: "#64C4FF" },
-  63: { name: "George Russell",      team: "Mercedes",        color: "#27F4D2" },
-  77: { name: "Valtteri Bottas",     team: "Cadillac",        color: "#FFFFFF" },
-  81: { name: "Oscar Piastri",       team: "McLaren",         color: "#FF8000" },
-  87: { name: "Oliver Bearman",      team: "Haas",            color: "#B6BABD" },
+  1:  { name: "Lando Norris",      team: "McLaren",         color: "#FF8000" },
+  3:  { name: "Max Verstappen",    team: "Red Bull Racing", color: "#3671C6" },
+  5:  { name: "Gabriel Bortoleto", team: "Audi",            color: "#C6002A" },
+  6:  { name: "Isack Hadjar",      team: "Racing Bulls",    color: "#6692FF" },
+  10: { name: "Pierre Gasly",      team: "Alpine",          color: "#FF87BC" },
+  11: { name: "Sergio Perez",      team: "Cadillac",        color: "#FFFFFF" },
+  12: { name: "Kimi Antonelli",    team: "Mercedes",        color: "#27F4D2" },
+  14: { name: "Fernando Alonso",   team: "Aston Martin",    color: "#358C75" },
+  16: { name: "Charles Leclerc",   team: "Ferrari",         color: "#E8002D" },
+  18: { name: "Lance Stroll",      team: "Aston Martin",    color: "#358C75" },
+  23: { name: "Alexander Albon",   team: "Williams",        color: "#64C4FF" },
+  27: { name: "Nico Hulkenberg",   team: "Audi",            color: "#C6002A" },
+  30: { name: "Liam Lawson",       team: "Racing Bulls",    color: "#6692FF" },
+  31: { name: "Esteban Ocon",      team: "Haas",            color: "#B6BABD" },
+  41: { name: "Arvid Lindblad",    team: "Racing Bulls",    color: "#6692FF" },
+  43: { name: "Franco Colapinto",  team: "Alpine",          color: "#FF87BC" },
+  44: { name: "Lewis Hamilton",    team: "Ferrari",         color: "#E8002D" },
+  55: { name: "Carlos Sainz",      team: "Williams",        color: "#64C4FF" },
+  63: { name: "George Russell",    team: "Mercedes",        color: "#27F4D2" },
+  77: { name: "Valtteri Bottas",   team: "Cadillac",        color: "#FFFFFF" },
+  81: { name: "Oscar Piastri",     team: "McLaren",         color: "#FF8000" },
+  87: { name: "Oliver Bearman",    team: "Haas",            color: "#B6BABD" },
 };
 
+// 2026 Australian GP Qualifying Grid
+const qualifyingGrid = [
+  { position: 1,  driver_number: 63, gap: "POLE",     lap: "1:18.518", tyre: "SOFT", tyreAge: 0 },
+  { position: 2,  driver_number: 12, gap: "+0.297s",  lap: "1:18.815", tyre: "SOFT", tyreAge: 0 },
+  { position: 3,  driver_number: 6,  gap: "+0.811s",  lap: "1:19.329", tyre: "SOFT", tyreAge: 0 },
+  { position: 4,  driver_number: 16, gap: "+0.921s",  lap: "1:19.439", tyre: "SOFT", tyreAge: 0 },
+  { position: 5,  driver_number: 81, gap: "+1.043s",  lap: "1:19.561", tyre: "SOFT", tyreAge: 0 },
+  { position: 6,  driver_number: 1,  gap: "+1.187s",  lap: "1:19.705", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 7,  driver_number: 44, gap: "+1.234s",  lap: "1:19.752", tyre: "SOFT", tyreAge: 0 },
+  { position: 8,  driver_number: 30, gap: "+1.312s",  lap: "1:19.830", tyre: "SOFT", tyreAge: 0 },
+  { position: 9,  driver_number: 41, gap: "+1.401s",  lap: "1:19.919", tyre: "SOFT", tyreAge: 0 },
+  { position: 10, driver_number: 5,  gap: "+1.521s",  lap: "1:20.039", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 11, driver_number: 87, gap: "Q2",       lap: "1:20.201", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 12, driver_number: 27, gap: "Q2",       lap: "1:20.312", tyre: "HARD",   tyreAge: 0 },
+  { position: 13, driver_number: 23, gap: "Q2",       lap: "1:20.445", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 14, driver_number: 31, gap: "Q2",       lap: "1:20.567", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 15, driver_number: 10, gap: "Q2",       lap: "1:20.678", tyre: "HARD",   tyreAge: 0 },
+  { position: 16, driver_number: 14, gap: "Q2",       lap: "1:20.789", tyre: "MEDIUM", tyreAge: 0 },
+  { position: 17, driver_number: 43, gap: "Q1",       lap: "1:20.891", tyre: "HARD",   tyreAge: 0 },
+  { position: 18, driver_number: 11, gap: "Q1",       lap: "1:21.012", tyre: "HARD",   tyreAge: 0 },
+  { position: 19, driver_number: 77, gap: "Q1",       lap: "1:21.123", tyre: "HARD",   tyreAge: 0 },
+  { position: 20, driver_number: 3,  gap: "CRASH Q1", lap: "No Time",  tyre: "SOFT",   tyreAge: 0 },
+  { position: 21, driver_number: 55, gap: "DNS",      lap: "No Time",  tyre: "UNKNOWN", tyreAge: 0 },
+  { position: 22, driver_number: 18, gap: "DNS",      lap: "No Time",  tyre: "UNKNOWN", tyreAge: 0 },
+];
+
+// Race schedule
+const races = [
+  { name: "🇦🇺 Australian Grand Prix",    start: new Date("2026-03-08T04:00:00Z"), end: new Date("2026-03-08T06:30:00Z") },
+  { name: "🇨🇳 Chinese Grand Prix",       start: new Date("2026-03-15T07:00:00Z"), end: new Date("2026-03-15T09:30:00Z") },
+  { name: "🇧🇭 Bahrain Grand Prix",       start: new Date("2026-03-22T15:00:00Z"), end: new Date("2026-03-22T17:30:00Z") },
+  { name: "🇸🇦 Saudi Arabian Grand Prix", start: new Date("2026-03-29T17:00:00Z"), end: new Date("2026-03-29T19:30:00Z") },
+];
+
+let isLiveSession = false;
+
+function getNextRace() {
+  const now = new Date();
+  return races.find(r => r.start > now) || null;
+}
+
+function getCurrentRace() {
+  const now = new Date();
+  return races.find(r => now >= r.start && now <= r.end) || null;
+}
+
+function updateCountdown() {
+  const currentRace = getCurrentRace();
+  if (isLiveSession || currentRace) {
+    document.getElementById("countdown-bar").style.display = "none";
+    return;
+  }
+  const nextRace = getNextRace();
+  if (!nextRace) {
+    document.getElementById("countdown-bar").style.display = "none";
+    return;
+  }
+  document.getElementById("countdown-bar").style.display = "flex";
+  document.getElementById("next-race-name").textContent = nextRace.name;
+  const diff = nextRace.start - new Date();
+  if (diff <= 0) {
+    document.getElementById("countdown").textContent = "🔴 LIGHTS OUT";
+    return;
+  }
+  const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs  = Math.floor((diff % (1000 * 60)) / 1000);
+  document.getElementById("countdown").textContent = days > 0
+    ? `${days}d ${String(hours).padStart(2,"0")}h ${String(mins).padStart(2,"0")}m ${String(secs).padStart(2,"0")}s`
+    : `${String(hours).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+}
+
+function tyreHTML(compound, age) {
+  const c = (compound || "UNKNOWN").toUpperCase();
+  const letter = c === "SOFT" ? "S" : c === "MEDIUM" ? "M" : c === "HARD" ? "H" : c === "INTER" ? "I" : c === "WET" ? "W" : "?";
+  return `<span class="tyre tyre-${c}">${letter}</span><span class="tyre-age">${age > 0 ? age + "L" : "NEW"}</span>`;
+}
+
 function formatLapTime(seconds) {
-  if (!seconds) return "—";
+  if (!seconds) return null;
   const mins = Math.floor(seconds / 60);
   const secs = (seconds % 60).toFixed(3).padStart(6, "0");
   return mins > 0 ? `${mins}:${secs}` : `${secs}s`;
 }
 
-function formatGap(gap) {
-  if (gap === null || gap === undefined) return "—";
-  if (typeof gap === "string") return gap;
-  return "+" + gap.toFixed(3) + "s";
+function renderResults(results, sessionLabel, live) {
+  isLiveSession = live;
+  let html = "";
+  results.forEach(d => {
+    const driver = drivers[d.driver_number] || { name: "Driver #" + d.driver_number, team: "Unknown", color: "#555" };
+    const posClass = d.position === 1 ? "pos pos-1" : d.position === 2 ? "pos pos-2" : d.position === 3 ? "pos pos-3" : "pos";
+    const gapDisplay = d.position === 1
+      ? '<span class="gap-leader">LEADER</span>'
+      : `<span class="gap">${d.gap || "—"}</span>`;
+    const lapDisplay = d.lap
+      ? `<span class="lap-time ${d.isFastest ? 'lap-fastest' : ''}">${d.isFastest ? '🟣 ' : ''}${d.lap}</span>`
+      : '<span class="lap-time" style="color:#333">—</span>';
+    const pitDisplay = d.inPit ? '<span class="pit-badge">PIT</span>' : '';
+    const tyreDisplay = tyreHTML(d.tyre, d.tyreAge || 0);
+
+    html += `<tr class="${d.inPit ? 'in-pit' : ''}">
+      <td class="${posClass}">P${d.position}</td>
+      <td class="driver-num">${d.driver_number}</td>
+      <td>
+        <span class="team-bar" style="background:${driver.color}"></span>
+        <span class="driver-name">${driver.name}${pitDisplay}</span>
+        <span class="team-name">${driver.team}</span>
+      </td>
+      <td>${gapDisplay}</td>
+      <td>${tyreDisplay}</td>
+      <td>${lapDisplay}</td>
+    </tr>`;
+  });
+
+  document.getElementById("timing").innerHTML = html;
+  document.getElementById("session-label").textContent = sessionLabel;
+  document.getElementById("last-updated").innerHTML = live
+    ? '<span class="live-dot"></span> LIVE — updating every 5 seconds'
+    : '<span class="static-dot"></span> Starting Grid — 🇦🇺 Australian Grand Prix 2026';
+}
+
+async function checkSafetyCar() {
+  try {
+    const res = await fetch("https://api.openf1.org/v1/race_control?session_key=latest&flag=SAFETY_CAR");
+    const data = await res.json();
+    const scBanner = document.getElementById("safety-car-banner");
+    const vscBanner = document.getElementById("vsc-banner");
+
+    if (!data || data.length === 0) {
+      scBanner.style.display = "none";
+      vscBanner.style.display = "none";
+      return;
+    }
+
+    const latest = data[data.length - 1];
+    const msg = (latest.message || "").toUpperCase();
+
+    if (msg.includes("VIRTUAL SAFETY CAR DEPLOYED") || msg.includes("VSC DEPLOYED")) {
+      vscBanner.style.display = "block";
+      scBanner.style.display = "none";
+    } else if (msg.includes("SAFETY CAR DEPLOYED") || msg.includes("SC DEPLOYED")) {
+      scBanner.style.display = "block";
+      vscBanner.style.display = "none";
+    } else if (msg.includes("SAFETY CAR IN") || msg.includes("VSC ENDING") || msg.includes("CLEAR")) {
+      scBanner.style.display = "none";
+      vscBanner.style.display = "none";
+    }
+  } catch(e) {
+    // Silent fail
+  }
 }
 
 async function updateTiming() {
   try {
-    const [posRes, intRes, lapRes] = await Promise.all([
+    const [posRes, intRes, lapRes, stintRes, pitRes] = await Promise.all([
       fetch("https://api.openf1.org/v1/position?session_key=latest"),
       fetch("https://api.openf1.org/v1/intervals?session_key=latest"),
-      fetch("https://api.openf1.org/v1/laps?session_key=latest")
+      fetch("https://api.openf1.org/v1/laps?session_key=latest"),
+      fetch("https://api.openf1.org/v1/stints?session_key=latest"),
+      fetch("https://api.openf1.org/v1/pit?session_key=latest")
     ]);
 
-    const posData = await posRes.json();
-    const intData = await intRes.json();
-    const lapData = await lapRes.json();
+    const posData  = await posRes.json();
+    const intData  = await intRes.json();
+    const lapData  = await lapRes.json();
+    const stintData = await stintRes.json();
+    const pitData  = await pitRes.json();
 
     if (!posData || posData.length === 0) {
-      document.getElementById("timing").innerHTML = `
-        <tr><td colspan="5">
-          <div id="no-session">
-            <h2>⏳ No Live Session</h2>
-            <p>Live timing will appear here during<br>F1 practice, qualifying and race sessions.<br><br>
-            Check the <a href="https://www.formula1.com/en/racing/2026" target="_blank">2026 F1 Calendar</a> for next session times.</p>
-          </div>
-        </td></tr>`;
+      renderResults(qualifyingGrid, "🇦🇺 Australian Grand Prix 2026 — Starting Grid", false);
+      document.getElementById("safety-car-banner").style.display = "none";
+      document.getElementById("vsc-banner").style.display = "none";
       return;
     }
 
+    // Check safety car
+    checkSafetyCar();
+
+    // Latest position per driver
     const latestPos = {};
     posData.forEach(d => {
-      if (!latestPos[d.driver_number] || d.date > latestPos[d.driver_number].date) {
+      if (!latestPos[d.driver_number] || d.date > latestPos[d.driver_number].date)
         latestPos[d.driver_number] = d;
-      }
     });
 
+    // Latest interval per driver
     const latestInt = {};
     intData.forEach(d => {
-      if (!latestInt[d.driver_number] || d.date > latestInt[d.driver_number].date) {
+      if (!latestInt[d.driver_number] || d.date > latestInt[d.driver_number].date)
         latestInt[d.driver_number] = d;
-      }
     });
 
+    // Fastest lap per driver
     const fastestLap = {};
     lapData.forEach(d => {
-      if (d.lap_duration) {
-        if (!fastestLap[d.driver_number] || d.lap_duration < fastestLap[d.driver_number]) {
-          fastestLap[d.driver_number] = d.lap_duration;
-        }
+      if (d.lap_duration && (!fastestLap[d.driver_number] || d.lap_duration < fastestLap[d.driver_number]))
+        fastestLap[d.driver_number] = d.lap_duration;
+    });
+    const fastestAll = Object.values(fastestLap).filter(Boolean).length
+      ? Math.min(...Object.values(fastestLap).filter(Boolean)) : null;
+
+    // Current tyre per driver from stints
+    const currentTyre = {};
+    stintData.forEach(s => {
+      if (!currentTyre[s.driver_number] || s.stint_number > currentTyre[s.driver_number].stint_number) {
+        currentTyre[s.driver_number] = s;
       }
     });
 
-    const allFastest = Math.min(...Object.values(fastestLap).filter(Boolean));
-    const sorted = Object.values(latestPos).sort((a, b) => a.position - b.position);
-
-    let html = "";
-    sorted.forEach(d => {
-      const driver = drivers[d.driver_number] || { name: "Driver #" + d.driver_number, team: "Unknown", color: "#555" };
-      const posClass = d.position === 1 ? "pos pos-1" : d.position === 2 ? "pos pos-2" : d.position === 3 ? "pos pos-3" : "pos";
-      const interval = latestInt[d.driver_number];
-      const gap = d.position === 1
-        ? '<span class="gap-leader">LEADER</span>'
-        : `<span class="gap">${formatGap(interval?.gap_to_leader)}</span>`;
-      const lapTime = fastestLap[d.driver_number];
-      const isOverallFastest = lapTime && lapTime === allFastest;
-      const lapDisplay = lapTime
-        ? `<span class="lap-time ${isOverallFastest ? 'lap-fastest' : ''}">${formatLapTime(lapTime)}${isOverallFastest ? ' 🟣' : ''}</span>`
-        : '<span class="lap-time">—</span>';
-
-      html += `<tr>
-        <td class="${posClass}">P${d.position}</td>
-        <td class="driver-num">${d.driver_number}</td>
-        <td>
-          <span class="team-bar" style="background:${driver.color}"></span>
-          <span class="driver-name">${driver.name}</span>
-          <span class="team-name">${driver.team}</span>
-        </td>
-        <td>${gap}</td>
-        <td>${lapDisplay}</td>
-      </tr>`;
+    // Current lap number from laps
+    const currentLap = {};
+    lapData.forEach(d => {
+      if (!currentLap[d.driver_number] || d.lap_number > currentLap[d.driver_number])
+        currentLap[d.driver_number] = d.lap_number;
     });
 
-    document.getElementById("timing").innerHTML = html;
-    document.getElementById("last-updated").innerHTML =
-      `<span class="live-dot"></span> Live · Updated ${new Date().toLocaleTimeString()}`;
+    // Drivers currently in pit
+    const inPitNow = {};
+    const fiveSecsAgo = new Date(Date.now() - 60000).toISOString();
+    pitData.forEach(p => {
+      if (p.date > fiveSecsAgo && !p.pit_out_time) {
+        inPitNow[p.driver_number] = true;
+      }
+    });
+
+    const sorted = Object.values(latestPos).sort((a, b) => a.position - b.position);
+
+    const liveResults = sorted.map(d => {
+      const interval = latestInt[d.driver_number];
+      const lt = fastestLap[d.driver_number];
+      const isFastest = lt && lt === fastestAll;
+      const stint = currentTyre[d.driver_number];
+      const lapNum = currentLap[d.driver_number] || 0;
+      const tyreAge = stint ? (lapNum - (stint.lap_start || 0)) : 0;
+
+      return {
+        position: d.position,
+        driver_number: d.driver_number,
+        gap: d.position === 1 ? "LEADER" : (interval?.gap_to_leader ? "+" + Number(interval.gap_to_leader).toFixed(3) + "s" : "—"),
+        lap: lt ? formatLapTime(lt) : null,
+        isFastest,
+        tyre: stint ? stint.compound : "UNKNOWN",
+        tyreAge: Math.max(0, tyreAge),
+        inPit: !!inPitNow[d.driver_number]
+      };
+    });
+
+    renderResults(liveResults, "🔴 LIVE — 🇦🇺 Australian Grand Prix 2026", true);
 
   } catch(e) {
-    document.getElementById("timing").innerHTML =
-      '<tr><td colspan="5" style="text-align:center;padding:40px;color:#444">Connection error — retrying...</td></tr>';
+    renderResults(qualifyingGrid, "🇦🇺 Australian Grand Prix 2026 — Starting Grid", false);
   }
 }
 
+// Start
 updateTiming();
 setInterval(updateTiming, 5000);
+updateCountdown();
+setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
